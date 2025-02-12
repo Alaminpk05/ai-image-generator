@@ -40,7 +40,7 @@ class ImageGeneratingBloc extends Bloc<PromptEvent, PromptState> {
       }
     } catch (e) {
       emit(ImageGeneratingErrorState(errorMessege: e.toString()));
-      debugPrint(e.toString());
+      debugPrint('Something went wrong');
       debugPrint('EMITTED CATCH ERROR STATE');
     }
   }

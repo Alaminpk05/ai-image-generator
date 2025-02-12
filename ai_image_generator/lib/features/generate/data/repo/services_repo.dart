@@ -4,20 +4,21 @@ import 'dart:typed_data';
 import 'package:ai_image_generator/features/generate/data/repo/contract_repo.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GenerateServicesRepo implements GenerateContractRepo {
   @override
   Future<Uint8List?> generateImage(String prompt) async {
-    String url = 'https://api.vyro.ai/v2/image/generations';
-    String apiKey = 'vk-LwuY8XBj9yjaVWF3FFmcXA2ht8I3EMBDoTd2S2M2ilLOW2tJ';
+    String? url = dotenv.env['url'];
+    String? apiKey = dotenv.env['key'];
     Map<String, dynamic> header = {'Authorization': 'Bearer $apiKey'};
 
     Map<String, dynamic> payload = {
       'prompt': prompt,
       'style': 'realistic',
       'aspect_ratio': "1:1",
-      'cfg': '0',
-      'seed': '0',
+      'cfg': '10',
+      'seed': '10',
       'high_res_result': '1',
     };
     FormData formData = FormData.fromMap(payload);
@@ -25,7 +26,7 @@ class GenerateServicesRepo implements GenerateContractRepo {
     dio.options =
         BaseOptions(headers: header, responseType: ResponseType.bytes);
     final response = await dio.post(
-      url,
+      url??'Empty',
       data: formData,
     );
     if (response.statusCode == 200) {
