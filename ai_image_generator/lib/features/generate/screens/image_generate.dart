@@ -12,71 +12,106 @@ class ImageGenerateScreen extends StatefulWidget {
 }
 
 class _ImageGenerateScreenState extends State<ImageGenerateScreen> {
+  final TextEditingController _textEditingController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true, // Allows layout to adjust when the keyboard is shown
       appBar: AppBar(
         title: Text('Generate Image'),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 5),
-        child: Column(
-          children: [
-            BlocConsumer<ImageGeneratingBloc, PromptState>(
-              listener: (context, state) {
-                if (state is ImageGeneratingErrorState) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.errorMessege)));
-                }
-              },
-              builder: (context, state) {
-                if (state is LoadingState) {
-                  debugPrint('IMAGE GENERATING SUCCESS STATE');
-                  return Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  );
-                }
-                if (state is ImageGeneratingSuccessState) {
-                  debugPrint('IMAGE GENERATING SUCCESS STATE');
-                  return Container(
+      body: SingleChildScrollView(
+        
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 20),
+          child: Column(
+            children: [
+              BlocConsumer<ImageGeneratingBloc, PromptState>(
+                listener: (context, state) {
+                  if (state is ImageGeneratingErrorState) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(state.errorMessege)));
+                  }
+                },
+                builder: (context, state) {
+                  if (state is LoadingState) {
+                    debugPrint('IMAGE GENERATING SUCCESS STATE');
+                    return Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    );
+                  }
+                  if (state is ImageGeneratingSuccessState) {
+                    debugPrint('IMAGE GENERATING SUCCESS STATE');
+                    return SizedBox(
                       height: 400,
                       width: double.infinity,
-                      child: Image.memory(state.image));
-                }
-                return Container(
-                  height: 400,
-                  width: double.infinity,
-                  color: Colors.deepPurple,
-
-                  // child: Image.file(state.image)
-                );
-              },
-            ),
-            SizedBox(
-              height: 20,
-            ),
-          ],
+                      child: Image.memory(
+                        state.image,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  }
+                  return Container(
+                    height: 400,
+                    width: double.infinity,
+                    color: Colors.deepPurple,
+                  );
+                },
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              // No need for Expanded widget here
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextFormField(
+                      controller: _textEditingController,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        hintText: 'Enter your image description...',
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        focusedBorder: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        alignment: Alignment.center,
+                        fixedSize: Size(350, 55),
+                      ),
+                      onPressed: () {
+                        context.read<ImageGeneratingBloc>().add(
+                          ImageGeneratingEvent(
+                            prompt: _textEditingController.text,
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Generate',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(color: Colors.white, fontSize: 19),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-        child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.deepPurple,
-              alignment: Alignment.center,
-              fixedSize: Size(300, 55),
-            ),
-            onPressed: () {
-              context.read<ImageGeneratingBloc>().add(ImageGeneratingEvent(
-                  prompt: 'A futuristic cityscape at night with neon lights'));
-            },
-            child: Text(
-              'Generate',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(color: Colors.white, fontSize: 19),
-            )),
       ),
     );
   }

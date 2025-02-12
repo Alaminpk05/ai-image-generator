@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:ai_image_generator/features/generate/bloc/prompt/prompt_event.dart';
@@ -25,6 +24,7 @@ class ImageGeneratingBloc extends Bloc<PromptEvent, PromptState> {
       debugPrint('EMITTED NO INTERNET ERROR STATE');
       return;
     }
+    emit(LoadingState());
     try {
       final Uint8List? image =
           await generateContractRepo.generateImage(event.prompt);
@@ -36,7 +36,7 @@ class ImageGeneratingBloc extends Bloc<PromptEvent, PromptState> {
       } else {
         emit(ImageGeneratingErrorState(
             errorMessege: 'Generating file is empty'));
-            debugPrint('EMITTED IF ELSE ERROR STATE');
+        debugPrint('EMITTED IF ELSE ERROR STATE');
       }
     } catch (e) {
       emit(ImageGeneratingErrorState(errorMessege: e.toString()));
