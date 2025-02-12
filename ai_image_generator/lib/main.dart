@@ -1,5 +1,7 @@
+import 'package:ai_image_generator/features/generate/bloc/prompt/prompt_bloc.dart';
 import 'package:ai_image_generator/features/generate/screens/image_generate.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,15 +13,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: ImageGenerateScreen()
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (BuildContext context) => ImageGeneratingBloc(),
+        ),
+      ],
+      child: MaterialApp(
+          title: 'Image Generator',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: ImageGenerateScreen()),
     );
   }
 }
 
+                        

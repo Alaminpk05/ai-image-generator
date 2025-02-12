@@ -1,5 +1,6 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 abstract class GenerateContractRepo {
-  Future<File?> generateImage(String prompt);
+  Future<Uint8List?> generateImage(String prompt);
 }
