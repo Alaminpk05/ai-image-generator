@@ -12,7 +12,7 @@ class ImageGeneratingBloc extends Bloc<PromptEvent, PromptState> {
   GenerateContractRepo generateContractRepo = GenerateServicesRepo();
   ImageGeneratingBloc() : super(Initial()) {
     on<ImageGeneratingEvent>(_onImageGeneratingEvent);
-    on<ImageSaveEvent>(_onImageSaveEvent);
+    
   }
 
   Future<void> _onImageGeneratingEvent(
@@ -45,15 +45,5 @@ class ImageGeneratingBloc extends Bloc<PromptEvent, PromptState> {
     }
   }
 
-  Future<void> _onImageSaveEvent(
-      ImageSaveEvent event, Emitter<PromptState> emit) async {
-    emit(LoadingState());
-    try {
-      // await generateContractRepo.requestPermission();
-      // await generateContractRepo.saveImageToGallery(); 
-      
-    } catch (e) {
-      emit(ErrorState(errorMessege: e.toString()));
-    }
-  }
+  
 }

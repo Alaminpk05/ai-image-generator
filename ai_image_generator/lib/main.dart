@@ -1,6 +1,5 @@
 import 'package:ai_image_generator/core/config/theme/theme.dart';
 import 'package:ai_image_generator/features/generate/bloc/prompt/prompt_bloc.dart';
-import 'package:ai_image_generator/features/generate/screens/image_generate.dart';
 import 'package:ai_image_generator/features/generate/screens/prompt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
