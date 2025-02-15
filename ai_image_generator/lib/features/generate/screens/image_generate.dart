@@ -1,15 +1,11 @@
-import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:ai_image_generator/features/generate/data/repo/services_repo.dart';
 import 'package:ai_image_generator/features/generate/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:ai_image_generator/features/generate/bloc/prompt/prompt_bloc.dart';
 import 'package:ai_image_generator/features/generate/bloc/prompt/prompt_state.dart';
-import 'package:share_plus/share_plus.dart';
 
 class ImageGenerateScreen extends StatefulWidget {
   const ImageGenerateScreen({
@@ -35,7 +31,7 @@ class _ImageGenerateScreenState extends State<ImageGenerateScreen> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+        padding: EdgeInsets.only(bottom: 30,top: 10),
         child: BlocListener<ImageGeneratingBloc, PromptState>(
           listener: (context, state) {
             if (state is SaveSuccessState) {
@@ -44,6 +40,7 @@ class _ImageGenerateScreenState extends State<ImageGenerateScreen> {
             }
           },
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.55,
@@ -83,11 +80,11 @@ class _ImageGenerateScreenState extends State<ImageGenerateScreen> {
                   },
                 ),
               ),
-              SizedBox(height: 20),
+              
               Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: MediaQuery.viewInsetsOf(context).bottom,
-                    horizontal: 30),
+                    horizontal: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.end,

@@ -54,19 +54,14 @@ class GenerateServicesRepo implements GenerateContractRepo {
     }
   }
 
-  Future<Uint8List?> captureImage() async {
-    ScreenshotController screenshotController = ScreenshotController();
-    final Uint8List? image = await screenshotController.capture();
-    if (image == null) {
-      return null;
-    }
-    return image;
-  }
+
 
   /// Capture and save the image to the gallery
   @override
   Future<void> saveImageToGallery(
       mounted, context, ScreenshotController screenController) async {
+
+       
     final Uint8List? image = await screenController.capture();
     if (image == null) {
       debugPrint("Error: Screenshot capture failed.");
