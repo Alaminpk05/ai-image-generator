@@ -13,9 +13,12 @@ class ImageGeneratingSuccessState extends PromptState {
 
   ImageGeneratingSuccessState({required this.image});
 }
+class SaveSuccessState extends PromptState{
+  
+}
 
-class ImageGeneratingErrorState extends PromptState {
+class ErrorState extends PromptState {
   final String errorMessege;
 
-  ImageGeneratingErrorState({required this.errorMessege});
+  ErrorState({required this.errorMessege});
 }

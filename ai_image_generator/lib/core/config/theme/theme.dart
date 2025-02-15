@@ -11,11 +11,14 @@ class AppTheme {
         ),
         useMaterial3: true,
         appBarTheme: AppBarTheme(
+          
+         
+          
           color: Color(0xff1C1C1C),
         ),
+       
+        
         inputDecorationTheme: InputDecorationTheme(
-          
-          
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey, width: 0.5),
             borderRadius: BorderRadius.circular(15),
@@ -27,5 +30,6 @@ class AppTheme {
             borderRadius: BorderRadius.circular(15),
           ),
         ));
+        
   }
 }

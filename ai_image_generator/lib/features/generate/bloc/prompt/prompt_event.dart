@@ -8,3 +8,13 @@ class ImageGeneratingEvent extends PromptEvent {
 
   ImageGeneratingEvent({required this.prompt});
 }
+class ImageSaveEvent extends PromptEvent {
+  
+
+  ImageSaveEvent();
+}
+class ImageShareEvent extends PromptEvent {
+  
+
+  ImageShareEvent();
+}

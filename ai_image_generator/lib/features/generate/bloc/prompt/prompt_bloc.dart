@@ -9,16 +9,17 @@ import 'package:flutter/material.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 class ImageGeneratingBloc extends Bloc<PromptEvent, PromptState> {
+  GenerateContractRepo generateContractRepo = GenerateServicesRepo();
   ImageGeneratingBloc() : super(Initial()) {
     on<ImageGeneratingEvent>(_onImageGeneratingEvent);
+    on<ImageSaveEvent>(_onImageSaveEvent);
   }
 
   Future<void> _onImageGeneratingEvent(
       ImageGeneratingEvent event, Emitter<PromptState> emit) async {
-    GenerateContractRepo generateContractRepo = GenerateServicesRepo();
     final hasConnection = await InternetConnection().hasInternetAccess;
     if (!hasConnection) {
-      emit(ImageGeneratingErrorState(
+      emit(ErrorState(
           errorMessege:
               "No internet connection. Please check your network and try again."));
       debugPrint('EMITTED NO INTERNET ERROR STATE');
@@ -34,14 +35,25 @@ class ImageGeneratingBloc extends Bloc<PromptEvent, PromptState> {
         debugPrint('EMITTED IMAGE GENERATING SUCCESS STATE');
         return;
       } else {
-        emit(ImageGeneratingErrorState(
-            errorMessege: 'Generating file is empty'));
+        emit(ErrorState(errorMessege: 'Generating file is empty'));
         debugPrint('EMITTED IF ELSE ERROR STATE');
       }
     } catch (e) {
-      emit(ImageGeneratingErrorState(errorMessege: e.toString()));
+      emit(ErrorState(errorMessege: e.toString()));
       debugPrint('Something went wrong');
       debugPrint('EMITTED CATCH ERROR STATE');
+    }
+  }
+
+  Future<void> _onImageSaveEvent(
+      ImageSaveEvent event, Emitter<PromptState> emit) async {
+    emit(LoadingState());
+    try {
+      // await generateContractRepo.requestPermission();
+      // await generateContractRepo.saveImageToGallery(); 
+      
+    } catch (e) {
+      emit(ErrorState(errorMessege: e.toString()));
     }
   }
 }
