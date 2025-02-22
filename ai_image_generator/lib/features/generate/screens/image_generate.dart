@@ -31,7 +31,7 @@ class _ImageGenerateScreenState extends State<ImageGenerateScreen> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.only(bottom: 30,top: 10),
+        padding: EdgeInsets.only(bottom: 30, top: 10),
         child: BlocListener<ImageGeneratingBloc, PromptState>(
           listener: (context, state) {
             if (state is SaveSuccessState) {
@@ -43,7 +43,7 @@ class _ImageGenerateScreenState extends State<ImageGenerateScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.55,
+                height: MediaQuery.of(context).size.height * 0.80,
                 width: double.infinity,
                 child: BlocConsumer<ImageGeneratingBloc, PromptState>(
                   listener: (context, state) {
@@ -60,81 +60,97 @@ class _ImageGenerateScreenState extends State<ImageGenerateScreen> {
                       );
                     }
                     if (state is ImageGeneratingSuccessState) {
-                      return Container(
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        height: 300,
-                        width: double.infinity,
-                        child: Screenshot(
-                          controller: _screenshotController,
-                          child: Image.memory(
-                            state.image,
-                            fit: BoxFit.cover,
+                      return Column(
+                        children: [
+                          Container(
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            height: 300,
+                            width: double.infinity,
+                            child: Screenshot(
+                              controller: _screenshotController,
+                              child: Image.memory(
+                                state.image,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                        ),
+                          SizedBox(height: 250,),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical:
+                                    MediaQuery.viewInsetsOf(context).bottom,
+                                horizontal: 15),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                SizedBox(height: 20),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SaveAndShareButtonWidget(
+                                        width: 150,
+                                        height: 55,
+                                        title: 'Save',
+                                        onTap: () {
+                                          GenerateServicesRepo()
+                                              .requestPermission();
+                                          GenerateServicesRepo()
+                                              .saveImageToGallery(
+                                            context
+                                                .mounted, // Ensure context is still available
+                                            context,
+                                            _screenshotController, // Pass ScreenshotController instance
+                                          );
+                                        }),
+                                    BlocListener<ImageGeneratingBloc,
+                                        PromptState>(
+                                      listener: (context, state) {
+                                        if (state
+                                            is ImageGeneratingSuccessState) {}
+                                      },
+                                      child: SaveAndShareButtonWidget(
+                                          width: 150,
+                                          height: 55,
+                                          title: 'Share',
+                                          onTap: () async {
+                                            if (context
+                                                    .read<ImageGeneratingBloc>()
+                                                    .state
+                                                is ImageGeneratingSuccessState) {
+                                              final state = context
+                                                      .read<ImageGeneratingBloc>()
+                                                      .state
+                                                  as ImageGeneratingSuccessState;
+
+                                              final Uint8List imageBytes =
+                                                  state.image;
+                                              GenerateServicesRepo()
+                                                  .shareImage(imageBytes);
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                    content: Text(
+                                                        "No image to share. Please generate an image first.")),
+                                              );
+                                            }
+                                          }),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       );
                     }
                     return SizedBox.shrink();
                   },
-                ),
-              ),
-              
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: MediaQuery.viewInsetsOf(context).bottom,
-                    horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SaveAndShareButtonWidget(
-                            width: 150,
-                            height: 55,
-                            title: 'Save',
-                            onTap: () {
-                              GenerateServicesRepo().requestPermission();
-                              GenerateServicesRepo().saveImageToGallery(
-                                context
-                                    .mounted, // Ensure context is still available
-                                context,
-                                _screenshotController, // Pass ScreenshotController instance
-                              );
-                            }),
-                        BlocListener<ImageGeneratingBloc, PromptState>(
-                          listener: (context, state) {
-                            if (state is ImageGeneratingSuccessState) {}
-                          },
-                          child: SaveAndShareButtonWidget(
-                              width: 150,
-                              height: 55,
-                              title: 'Share',
-                              onTap: () async {
-                                if (context.read<ImageGeneratingBloc>().state
-                                    is ImageGeneratingSuccessState) {
-                                  final state = context
-                                      .read<ImageGeneratingBloc>()
-                                      .state as ImageGeneratingSuccessState;
-
-                                  final Uint8List imageBytes = state.image;
-                                  GenerateServicesRepo().shareImage(imageBytes);
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(
-                                            "No image to share. Please generate an image first.")),
-                                  );
-                                }
-                              }),
-                        ),
-                      ],
-                    ),
-                  ],
                 ),
               ),
             ],

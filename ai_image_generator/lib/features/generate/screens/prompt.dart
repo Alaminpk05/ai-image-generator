@@ -60,7 +60,7 @@ class _PromptScreenState extends State<PromptScreen> {
                   maxLines: null,
                   textAlignVertical: TextAlignVertical.top,
                   decoration: InputDecoration(
-                    hintText: 'Create the most beautiful robot...',
+                    hintText: 'Create the most powerful robot...',
                   ),
                 ),
               ),
